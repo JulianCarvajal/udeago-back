@@ -7,6 +7,21 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({
+    // Permitimos específicamente el puerto de tu frontend (Vite)
+    origin: 'http://localhost:5173', 
+    
+    // Métodos que permitimos
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    
+    // Permitimos que se envíen headers de autorización (JWT)
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    
+    // IMPORTANTE: Esto permite que el navegador acepte la respuesta 
+    // cuando enviamos el token
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Cats example')
     .setDescription('The cats API description')
