@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async googleLogin(req: any) {
-    if (!req.user) return 'No user from google';
+    if (!req.user) throw new UnauthorizedException('No se recibió usuario de Google');
 
     // 1. Buscamos el usuario incluyendo su relación con la tabla 'roles'
     let user = await this.userRepository.findOne({ 
