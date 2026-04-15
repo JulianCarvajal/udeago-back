@@ -60,9 +60,7 @@ export class EventsService {
     const event = await this.findOne(id);
     const cancelledStatus = this.masterDataService.getStatusByName('CANCELADO');
     event.status = { id: (await cancelledStatus).id } as any;
-    console.log(`ID de status CANCELADO: ${(await cancelledStatus).id}`);
     await this.eventRepository.save(event);
-    console.log(`Evento con ID ${id} marcado como ${cancelledStatus}`);
     return await this.eventRepository.softRemove(event);
   }
 }
