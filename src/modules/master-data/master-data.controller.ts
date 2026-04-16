@@ -3,7 +3,7 @@ import { MasterDataService } from './master-data.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('master-data')
-@ApiTags('Categories')
+@ApiTags('Estados')
 export class MasterDataController {
   constructor(private readonly masterDataService: MasterDataService) {}
 
