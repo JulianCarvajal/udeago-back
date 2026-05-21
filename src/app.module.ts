@@ -12,11 +12,24 @@ import { ExternalLinksModule } from './modules/external-links/external-links.mod
 import { CalendarJobsModule } from './modules/calendar-jobs/calendar-jobs.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SeederModule } from './modules/seeder/seeder.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST', 'localhost'),
+          port: configService.get<number>('REDIS_PORT', 6379),
+          password: configService.get<string>('REDIS_PASSWORD') || undefined,
+        },
+      }),
     }),
     
     TypeOrmModule.forRootAsync({

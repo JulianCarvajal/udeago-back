@@ -15,7 +15,7 @@ export class CalendarJob extends BaseEntity {
   @Column({ name: 'failed_emails', type: 'integer', default: 0 })
   failedEmails?: number;
 
-  @Column({ name: 'error_log', type: 'jsonb', nullable: true, transformer: new EncryptionTransformer() })
+  @Column({ name: 'error_log', type: 'jsonb', nullable: true })
   errorLog?: any;
 
   @ManyToOne(() => Event)

@@ -14,21 +14,34 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private readonly whitelistRepository: Repository<AdminWhiteList>,
   ) {
     super({
-        clientID: configService.get<string>('GOOGLE_CLIENT_ID')!,
-        clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET')!,
-        callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL')!,
-        scope: ['email', 'profile'],
-    });
+      clientID: configService.get<string>('GOOGLE_CLIENT_ID')!,
+      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET')!,
+      callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL')!,
+      scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar'],
+    } as any); // 'as any' necesario porque @types/passport-google-oauth20
+               // no expone accessType/prompt pero passport los acepta en runtime
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: VerifyCallback,
+  ): Promise<any> {
     const { emails, displayName, photos, id } = profile;
     const email = emails[0].value;
 
-    const isWhitelisted = await this.whitelistRepository.findOne({ where: { email } });
+    const isWhitelisted = await this.whitelistRepository.findOne({
+      where: { email },
+    });
 
     if (!isWhitelisted) {
-      return done(new UnauthorizedException('Tu correo institucional no está autorizado para acceder.'), false);
+      return done(
+        new UnauthorizedException(
+          'Tu correo institucional no está autorizado para acceder.',
+        ),
+        false,
+      );
     }
 
     const user = {
@@ -37,6 +50,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       picture: photos[0].value,
       providerId: id,
       accessToken,
+      refreshToken, // <-- ahora disponible para guardarlo en BD
     };
 
     done(null, user);
