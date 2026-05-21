@@ -24,7 +24,7 @@ export class SeedService implements OnModuleInit {
     }
 
     // 2. Crear Status iniciales
-    const statusNames = ['ACTIVO', 'INACTIVO', 'PROGRAMADO', 'CANCELADO', 'ELIMINADO'];
+    const statusNames = ['ACTIVO', 'INACTIVO', 'PROGRAMADO', 'CANCELADO', 'ELIMINADO', 'COMPLETADO', 'FALLIDO'];
     for (const name of statusNames) {
       const exists = await this.statusRepo.findOne({ where: { status: name } });
       if (!exists) {
