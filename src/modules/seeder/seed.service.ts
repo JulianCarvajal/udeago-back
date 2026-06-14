@@ -33,11 +33,13 @@ export class SeedService implements OnModuleInit {
     }
 
     // 3. Crear Email inicial en Whitelist
-    const myEmail = 'cristian.carvajalm@udea.edu.co';
-    const emailExists = await this.whitelistRepo.findOne({ where: { email: myEmail } });
-    if (!emailExists) {
-      await this.whitelistRepo.save(this.whitelistRepo.create({ email: myEmail }));
-      console.log(`Email ${myEmail} añadido a la whitelist.`);
+    const myEmail = ['cristian.carvajalm@udea.edu.co', 'julian.carvajalm@udea.edu.co', 'bienestar.ingenieria@udea.edu.co', 'combienestar.ing@udea.edu.co'];
+    for (const email of myEmail) {
+      const emailExists = await this.whitelistRepo.findOne({ where: { email: email } });
+      if (!emailExists) {
+        await this.whitelistRepo.save(this.whitelistRepo.create({ email: email }));
+        console.log(`Email ${email} añadido a la whitelist.`);
+      }
     }
 
     console.log('Seeding completado con éxito.');
