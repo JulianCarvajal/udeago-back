@@ -7,9 +7,19 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
 
+  const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim());
+
   app.enableCors({
-    // Permitimos específicamente el puerto de tu frontend (Vite)
-    origin: 'http://localhost:5173', 
+    origin: (origin, callback) => {
+      // Permite requests sin 'origin' (ej: Postman, curl, healthchecks)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origen no permitido por CORS: ${origin}`));
+      }
+    }, 
     
     // Métodos que permitimos
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
