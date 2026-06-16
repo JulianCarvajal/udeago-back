@@ -43,10 +43,10 @@ export class AuthController {
     try {
       const session = await this.authService.googleLogin(req);
       const userJson = encodeURIComponent(JSON.stringify(session.user));
-      const redirectUrl = `http://localhost:5173/admin/auth/callback#access_token=${session.access_token}&expires_in=3600&user=${userJson}`;
+      const redirectUrl = `https://udeago.vercel.app/admin/auth/callback#access_token=${session.access_token}&expires_in=3600&user=${userJson}`;
       return res.redirect(redirectUrl);
     } catch (error) {
-      return res.redirect('http://localhost:5173/admin/auth/callback?error=forbidden');
+      return res.redirect('https://udeago.vercel.app/admin/auth/callback?error=forbidden');
     }
   }
 }
